@@ -7,7 +7,8 @@
 #include <iostream>
 
 HSLColorWheel::HSLColorWheel(QWidget *parent, QColor color, int radius, int ring_size)
-        : BaseColorWheel(parent, color, radius, ring_size) {
+        : BaseColorWheel(parent, color, radius, ring_size),
+        mouse_state(None) {
 
     renderHSCircle(inner_radius);
 }
@@ -64,8 +65,9 @@ void HSLColorWheel::paintEvent(QPaintEvent *e) {
     // Draw circle selector
     path = QPainterPath();
     path.addEllipse(QRectF(0, 0, 8, 8));
-    // TODO: calculate the real position in function of the color
-    path.translate(center - 4, center - 4);
+    int x = saturation * inner_radius * std::sin(hue * 2 * PI);
+    int y = saturation * inner_radius * std::cos(hue * 2 * PI);
+    path.translate(center - 4 - x, center - 4 - y);
     painter.fillPath(path, QColor(200, 200, 200));
     painter.setPen(QPen(QColor(25, 25, 25), 1));
     painter.drawPath(path);
@@ -74,21 +76,28 @@ void HSLColorWheel::paintEvent(QPaintEvent *e) {
     path = QPainterPath();
     QPolygonF triangle;
     triangle << QPoint(0,0) << QPoint(ring_size * 1.5, 0) << QPoint(ring_size * 0.75, ring_size + 2) << QPoint(0,0);
+    triangle = QMatrix().translate(center, center)
+                        .rotate(-360 * hue)
+                        .translate(-ring_size * 0.75, -inner_radius - ring_size)
+                        .map(triangle);
+
     path.addPolygon(triangle);
-    path.translate(center - ring_size * 0.75, ring_size * 2);
-    painter.fillPath(path, QColor::fromHslF(hue, saturation, lightness));
-    painter.setPen(QPen(QColor(255, 255, 255), 1));
+    painter.fillPath(path, QColor(200, 200, 200));
     painter.drawPath(path);
 
     // Draw lightness selector
     path = QPainterPath();
     triangle = QPolygonF();
     triangle << QPoint(0,0) << QPoint(ring_size * 1.5, 0) << QPoint(ring_size * 0.75, ring_size + 2) << QPoint(0,0);
-    triangle = QMatrix().scale(1, -1).translate(0, -ring_size + 1).map(triangle);
+    triangle = QMatrix().translate(center, center)
+                        .rotate(360 * lightness)
+                        .rotate(-180)
+                        .translate(-ring_size * 0.75, -inner_radius - ring_size)
+                        .scale(1, -1)
+                        .map(triangle);
+
     path.addPolygon(triangle);
-    path.translate(center - ring_size * 0.75, ring_size);
-    painter.fillPath(path, QColor::fromHslF(hue, saturation, lightness));
-    painter.setPen(QPen(QColor(255, 255, 255), 1));
+    painter.fillPath(path, QColor(200, 200, 200));
     painter.drawPath(path);
 
 }
@@ -104,7 +113,7 @@ void HSLColorWheel::renderHSCircle(int radius) {
             hs_circle.setPixel(x, y, QColor::fromHslF(
                 pixHue(x + center_offset, y + center_offset),
                 pixSaturation(x + center_offset, y + center_offset),
-                pixLightness(x + center_offset, y + center_offset)
+                lightness
             ).rgb());
         }
     }
@@ -116,12 +125,38 @@ void HSLColorWheel::renderHSCircle(int radius) {
 */
 
 void HSLColorWheel::mouseMoveEvent(QMouseEvent *mouse) {
-
+    if( mouse_state == HSCircle ) {
+        setHue(pixHue(mouse->x(), mouse->y()));
+        setSaturation(pixSaturation(mouse->x(), mouse->y()));
+    }
+    else if( mouse_state == HRing ) {
+        setHue(pixHue(mouse->x(), mouse->y()));
+    }
+    else if( mouse_state == LRing ) {
+        setLightness(pixLightness(mouse->x(), mouse->y()));
+    }
 }
 
-void HSLColorWheel::mouseButtonPressEvent(QMouseEvent *mouse) {
-
+void HSLColorWheel::mousePressEvent(QMouseEvent *mouse) {
+    if( inRadius(mouse->x(), mouse->y(), center, center, inner_radius ) ){
+        mouse_state = HSCircle;
+        setHue(pixHue(mouse->x(), mouse->y()));
+        setSaturation(pixSaturation(mouse->x(), mouse->y()));
+    }
+    else if( inRadius(mouse->x(), mouse->y(), center, center, inner_radius + ring_size)) {
+        mouse_state = HRing;
+        setHue(pixHue(mouse->x(), mouse->y()));
+    }
+    else if( inRadius(mouse->x(), mouse->y(), center, center, inner_radius + ring_size * 2)) {
+        mouse_state = LRing;
+        setLightness(pixLightness(mouse->x(), mouse->y()));
+    }
 }
+
+void HSLColorWheel::mouseReleaseEvent(QMouseEvent *mouse) {
+    mouse_state = None;
+}
+
 
 /*
     Conversion from pixel position to color values
@@ -154,6 +189,18 @@ float HSLColorWheel::pixSaturation(int x, int y) {
 }
 
 float HSLColorWheel::pixLightness(int x, int y) {
-    // TODO: implement
-    return 0.3;
+    x -= center;
+    y = -y + center;
+    float angle = std::atan2(x, y) + PI;
+    float l = angle / (2 * PI);
+    return l;
+}
+
+
+void HSLColorWheel::setLightness(float l) {
+    if (l >= 0 && l <= 1) {
+        lightness = l;
+        renderHSCircle(inner_radius);
+        update();
+    }
 }

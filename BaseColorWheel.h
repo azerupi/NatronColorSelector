@@ -53,7 +53,7 @@ protected:
     virtual void paintEvent(QPaintEvent *) = 0;
 
     virtual void mouseMoveEvent(QMouseEvent *mouse) = 0;
-    virtual void mouseButtonPressEvent(QMouseEvent *mouse) = 0;
+    virtual void mousePressEvent(QMouseEvent *mouse) = 0;
 
     void resizeEvent(QResizeEvent *resize);
 
