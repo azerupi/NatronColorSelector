@@ -16,6 +16,7 @@ class BaseColorWheel: public QWidget {
     Q_OBJECT
 
 protected:
+    int center;
     int outer_radius;
     int inner_radius;
 
@@ -57,7 +58,7 @@ protected:
 
     virtual float pixHue(int x, int y) = 0;
     virtual float pixSaturation(int x, int y) = 0;
-    virtual float pixValue(int x, int y) = 0;
+    virtual float pixLightness(int x, int y) = 0;
 
     // Calculates the distance between two points
     float distanceBetweenPoints(int x1, int y1, int x2, int y2);

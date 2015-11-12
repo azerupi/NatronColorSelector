@@ -5,14 +5,15 @@
 
 BaseColorWheel::BaseColorWheel(QWidget *parent, QColor color, int radius)
         : QWidget(parent),
-        inner_radius(radius - 20),
+        center(radius),
         outer_radius(radius),
+        inner_radius(radius - 20),
         n_outer_dots(9),
         hue(color.hslHue()),
         saturation(color.hslSaturation()),
         lightness(color.lightness()) {
 
-    setMinimumSize(outer_radius * 2, outer_radius * 2);
+    setMinimumSize(radius * 2, radius * 2);
 }
 
 BaseColorWheel::~BaseColorWheel() {}

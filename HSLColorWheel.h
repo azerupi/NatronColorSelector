@@ -12,6 +12,7 @@
 class HSLColorWheel : BaseColorWheel {
 
 private:
+    QImage hs_circle;
 
 public:
     explicit HSLColorWheel(QWidget *parent = 0, QColor color = Qt::white, int radius = 120);
@@ -20,12 +21,14 @@ public:
 protected:
     void paintEvent(QPaintEvent *);
 
+    void renderHSCircle(int radius);
+
     void mouseMoveEvent(QMouseEvent *mouse);
     void mouseButtonPressEvent(QMouseEvent *mouse);
 
     float pixHue(int x, int y);
     float pixSaturation(int x, int y);
-    float pixValue(int x, int y);
+    float pixLightness(int x, int y);
 
 };
 
