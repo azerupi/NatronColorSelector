@@ -27,7 +27,7 @@ protected:
 
 public:
     explicit BaseColorWheel(QWidget *parent = 0, QColor color = Qt::white, int radius = 120);
-    virtual ~BaseColorWheel();
+    virtual ~BaseColorWheel() = 0;
 
     QColor getColor() const;           // Get current color
     float getHue() const;              // Get current hue          between 0 and 1
@@ -48,16 +48,16 @@ signals:
     void colorSelected(QColor);
 
 protected:
-    virtual void paintEvent(QPaintEvent *);
+    virtual void paintEvent(QPaintEvent *) = 0;
 
-    virtual void mouseMoveEvent(QMouseEvent *mouse);
-    virtual void mouseButtonPressEvent(QMouseEvent *mouse);
+    virtual void mouseMoveEvent(QMouseEvent *mouse) = 0;
+    virtual void mouseButtonPressEvent(QMouseEvent *mouse) = 0;
 
     void resizeEvent(QResizeEvent *resize);
 
-    virtual float pixHue(int x, int y);
-    virtual float pixSaturation(int x, int y);
-    virtual float pixValue(int x, int y);
+    virtual float pixHue(int x, int y) = 0;
+    virtual float pixSaturation(int x, int y) = 0;
+    virtual float pixValue(int x, int y) = 0;
 
     // Calculates the distance between two points
     float distanceBetweenPoints(int x1, int y1, int x2, int y2);

@@ -1,8 +1,11 @@
 Makefile
 
 moc_*
-*.app
 *.o
+
+# App files
+NatronColorSelector
+*.app
 
 # Those files are not included because they are experiments
 ColorWheel.*

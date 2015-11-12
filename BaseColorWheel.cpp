@@ -15,6 +15,8 @@ BaseColorWheel::BaseColorWheel(QWidget *parent, QColor color, int radius)
     setMinimumSize(outer_radius * 2, outer_radius * 2);
 }
 
+BaseColorWheel::~BaseColorWheel() {}
+
 /*
         HELPER FUNCTIONS
 */
@@ -29,6 +31,13 @@ bool BaseColorWheel::inRadius(int x, int y, int c_x, int c_y, int radius) {
     return distanceBetweenPoints(x , y, c_x, c_y) <= radius;
 }
 
+/*
+        PAINTING
+*/
+
+void BaseColorWheel::resizeEvent(QResizeEvent *resize) {
+
+}
 
 
 /*
