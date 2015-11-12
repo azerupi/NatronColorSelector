@@ -1,0 +1,8 @@
+Makefile
+
+moc_*
+*.app
+*.o
+
+# Those files are not included because they are experiments
+ColorWheel.*
