@@ -15,7 +15,7 @@ private:
     QImage hs_circle;
 
 public:
-    explicit HSLColorWheel(QWidget *parent = 0, QColor color = Qt::white, int radius = 120);
+    explicit HSLColorWheel(QWidget *parent = 0, QColor color = QColor::fromHslF(0, 0, 0.5), int radius = 120, int ring_size = 8);
     ~HSLColorWheel ();
 
 protected:

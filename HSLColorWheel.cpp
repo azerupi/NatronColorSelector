@@ -2,11 +2,12 @@
 
 #include "QPainter"
 #include "QRectF"
+#include "QMatrix"
 
 #include <iostream>
 
-HSLColorWheel::HSLColorWheel(QWidget *parent, QColor color, int radius)
-        : BaseColorWheel(parent, color, radius) {
+HSLColorWheel::HSLColorWheel(QWidget *parent, QColor color, int radius, int ring_size)
+        : BaseColorWheel(parent, color, radius, ring_size) {
 
     renderHSCircle(inner_radius);
 }
@@ -36,13 +37,11 @@ void HSLColorWheel::paintEvent(QPaintEvent *e) {
 
     // Draw Hue ring
     path = QPainterPath();
-    QConicalGradient gradient_hue(center, center, 0);
+    QConicalGradient gradient_hue(center, center, 90);
     for ( float a = 0; a < 1.0; a += 1.0 / float(24 - 1) ) {
-        float c = a + 0.75;
-        if ( c >= 1 ) { c -= 1; }
-        gradient_hue.setColorAt(a, QColor::fromHslF(c, 1.0, 0.5));
+        gradient_hue.setColorAt(a, QColor::fromHslF(a, 1.0, 0.5));
     }
-    gradient_hue.setColorAt(1,QColor::fromHslF(0, 1, 0.5).rgb());
+    gradient_hue.setColorAt(1, QColor::fromHslF(0, 1, 0.5).rgb());
 
     path.addEllipse(QRectF(0, 0, (inner_radius + ring_size) * 2 , (inner_radius + ring_size) * 2 ));
     path.translate(center - (inner_radius + ring_size), center - (inner_radius + ring_size));
@@ -62,7 +61,35 @@ void HSLColorWheel::paintEvent(QPaintEvent *e) {
 
     painter.setClipping(false);
 
+    // Draw circle selector
+    path = QPainterPath();
+    path.addEllipse(QRectF(0, 0, 8, 8));
+    // TODO: calculate the real position in function of the color
+    path.translate(center - 4, center - 4);
+    painter.fillPath(path, QColor(200, 200, 200));
+    painter.setPen(QPen(QColor(25, 25, 25), 1));
+    painter.drawPath(path);
 
+    // Draw hue selector
+    path = QPainterPath();
+    QPolygonF triangle;
+    triangle << QPoint(0,0) << QPoint(ring_size * 1.5, 0) << QPoint(ring_size * 0.75, ring_size + 2) << QPoint(0,0);
+    path.addPolygon(triangle);
+    path.translate(center - ring_size * 0.75, ring_size * 2);
+    painter.fillPath(path, QColor::fromHslF(hue, saturation, lightness));
+    painter.setPen(QPen(QColor(255, 255, 255), 1));
+    painter.drawPath(path);
+
+    // Draw lightness selector
+    path = QPainterPath();
+    triangle = QPolygonF();
+    triangle << QPoint(0,0) << QPoint(ring_size * 1.5, 0) << QPoint(ring_size * 0.75, ring_size + 2) << QPoint(0,0);
+    triangle = QMatrix().scale(1, -1).translate(0, -ring_size + 1).map(triangle);
+    path.addPolygon(triangle);
+    path.translate(center - ring_size * 0.75, ring_size);
+    painter.fillPath(path, QColor::fromHslF(hue, saturation, lightness));
+    painter.setPen(QPen(QColor(255, 255, 255), 1));
+    painter.drawPath(path);
 
 }
 

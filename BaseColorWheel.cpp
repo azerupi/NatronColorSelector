@@ -3,16 +3,16 @@
 #include "QPainter"
 #include "QRectF"
 
-BaseColorWheel::BaseColorWheel(QWidget *parent, QColor color, int radius)
+BaseColorWheel::BaseColorWheel(QWidget *parent, QColor color, int radius, int ring_size)
         : QWidget(parent),
         center(radius),
-        ring_size(10),
+        ring_size(ring_size),
         outer_radius(radius),
         inner_radius(radius - ring_size * 3),
         n_outer_dots(9),
-        hue(color.hslHue()),
-        saturation(color.hslSaturation()),
-        lightness(color.lightness()) {
+        hue(color.hueF()),
+        saturation(color.saturationF()),
+        lightness(color.lightnessF()) {
 
     setMinimumSize(radius * 2, radius * 2);
 }

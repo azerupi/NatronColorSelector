@@ -28,7 +28,7 @@ protected:
     float lightness;
 
 public:
-    explicit BaseColorWheel(QWidget *parent = 0, QColor color = Qt::white, int radius = 120);
+    explicit BaseColorWheel(QWidget *parent = 0, QColor color = QColor::fromHslF(0, 1, 0.5), int radius = 120, int ring_size = 8);
     virtual ~BaseColorWheel() = 0;
 
     QColor getColor() const;           // Get current color
