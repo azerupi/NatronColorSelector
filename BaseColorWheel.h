@@ -32,7 +32,7 @@ public:
     QColor getColor() const;           // Get current color
     float getHue() const;              // Get current hue          between 0 and 1
     float getSaturation() const;       // Get current saturation   between 0 and 1
-    float getValue() const;            // Get current value        between 0 and 1
+    float getLightness() const;            // Get current value        between 0 and 1
 
 public slots:
     void setColor(QColor c);        // Set current color

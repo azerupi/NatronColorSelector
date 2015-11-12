@@ -1,16 +1,16 @@
-#include "BaseBaseColorWheel.h"
+#include "BaseColorWheel.h"
 
 #include "QPainter"
 #include "QRectF"
 
-BaseColorWheel::BaseColorWheel(QWidget *parent, QColor color = Qt::white, int radius = 120)
+BaseColorWheel::BaseColorWheel(QWidget *parent, QColor color, int radius)
         : QWidget(parent),
         inner_radius(radius - 20),
         outer_radius(radius),
         n_outer_dots(9),
         hue(color.hslHue()),
         saturation(color.hslSaturation()),
-        lightness(color.lightness()), {
+        lightness(color.lightness()) {
 
     setMinimumSize(outer_radius * 2, outer_radius * 2);
 }
@@ -25,8 +25,8 @@ float BaseColorWheel::distanceBetweenPoints(int x1, int y1, int x2, int y2) {
 }
 
 //  Checks if a point is in a given radius ()
-bool BaseColorWheel::bool inRadius(int x, int y, int c_x, int c_y, int radius) {
-    return std::round(distanceBetweenPoints(x , y, c_x, c_y)) <= radius;
+bool BaseColorWheel::inRadius(int x, int y, int c_x, int c_y, int radius) {
+    return distanceBetweenPoints(x , y, c_x, c_y) <= radius;
 }
 
 
