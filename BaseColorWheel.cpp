@@ -6,8 +6,9 @@
 BaseColorWheel::BaseColorWheel(QWidget *parent, QColor color, int radius)
         : QWidget(parent),
         center(radius),
+        ring_size(10),
         outer_radius(radius),
-        inner_radius(radius - 20),
+        inner_radius(radius - ring_size * 3),
         n_outer_dots(9),
         hue(color.hslHue()),
         saturation(color.hslSaturation()),

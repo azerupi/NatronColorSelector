@@ -17,6 +17,7 @@ class BaseColorWheel: public QWidget {
 
 protected:
     int center;
+    int ring_size;
     int outer_radius;
     int inner_radius;
 

@@ -3,6 +3,8 @@
 #include "QPainter"
 #include "QRectF"
 
+#include <iostream>
+
 HSLColorWheel::HSLColorWheel(QWidget *parent, QColor color, int radius)
         : BaseColorWheel(parent, color, radius) {
 
@@ -22,13 +24,45 @@ void HSLColorWheel::paintEvent(QPaintEvent *e) {
     painter.setRenderHint(QPainter::Antialiasing, true);
     QPainterPath path;
 
+    // Draw Lightness ring
+    QConicalGradient gradient_lightness(center, center, -90);
+    gradient_lightness.setColorAt(0, Qt::white);
+    gradient_lightness.setColorAt(1, Qt::black);
+    path.addEllipse(QRectF(0, 0, (inner_radius + ring_size * 2) * 2 , (inner_radius + ring_size * 2) * 2 ));
+    path.translate(center - (inner_radius + ring_size * 2), center - (inner_radius + ring_size * 2));
+    painter.setPen(QPen(QColor(75, 75, 75), 1.2));
+    painter.fillPath(path, gradient_lightness);
+    painter.drawPath(path);
+
+    // Draw Hue ring
+    path = QPainterPath();
+    QConicalGradient gradient_hue(center, center, 0);
+    for ( float a = 0; a < 1.0; a += 1.0 / float(24 - 1) ) {
+        float c = a + 0.75;
+        if ( c >= 1 ) { c -= 1; }
+        gradient_hue.setColorAt(a, QColor::fromHslF(c, 1.0, 0.5));
+    }
+    gradient_hue.setColorAt(1,QColor::fromHslF(0, 1, 0.5).rgb());
+
+    path.addEllipse(QRectF(0, 0, (inner_radius + ring_size) * 2 , (inner_radius + ring_size) * 2 ));
+    path.translate(center - (inner_radius + ring_size), center - (inner_radius + ring_size));
+    painter.setPen(Qt::NoPen);
+    painter.fillPath(path, gradient_hue);
+    painter.drawPath(path);
+
     // Draw HS circle
+    path = QPainterPath();
     path.addEllipse(QRectF(0, 0, inner_radius * 2, inner_radius * 2));
     path.translate( center - inner_radius, center - inner_radius );
     painter.setClipPath(path);
 
     path = QPainterPath();
+    painter.setPen(QPen(QColor(75, 75, 75), 1));
     painter.drawImage(center - inner_radius, center - inner_radius, hs_circle);
+
+    painter.setClipping(false);
+
+
 
 }
 
@@ -94,5 +128,5 @@ float HSLColorWheel::pixSaturation(int x, int y) {
 
 float HSLColorWheel::pixLightness(int x, int y) {
     // TODO: implement
-    return 0.5;
+    return 0.3;
 }
