@@ -1,14 +1,14 @@
 #include <QApplication>
 #include <QWidget>
 
-#include "ColorWheel.h"
+#include "HSLColorWheel.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QWidget window;
 
-    ColorWheel wheel(&window);
+    HSLColorWheel wheel(&window);
 
     //window.addWidget(wheel);
 

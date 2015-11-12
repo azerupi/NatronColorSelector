@@ -3,25 +3,24 @@
 #include "QPainter"
 #include "QRectF"
 
-BaseColorWheel::BaseColorWheel(QWidget *parent): QWidget(parent),
-        inner_radius(100),
-        outer_radius(120),
+BaseColorWheel::BaseColorWheel(QWidget *parent, QColor color = Qt::white, int radius = 120)
+        : QWidget(parent),
+        inner_radius(radius - 20),
+        outer_radius(radius),
         n_outer_dots(9),
-        hue(0),
-        saturation(0),
-        lightness(0.5), {
+        hue(color.hslHue()),
+        saturation(color.hslSaturation()),
+        lightness(color.lightness()), {
 
     setMinimumSize(outer_radius * 2, outer_radius * 2);
 }
-
-BaseColorWheel::~BaseColorWheel() {}
 
 /*
         HELPER FUNCTIONS
 */
 
 // Calculates the distance between two points
-float BaseColorWheel::distanceBetweenPoints(x1, y1, x2, y2) {
+float BaseColorWheel::distanceBetweenPoints(int x1, int y1, int x2, int y2) {
     return std::sqrt( std::pow(x1 - x2, 2) + std::pow(y1 - y2, 2) );
 }
 

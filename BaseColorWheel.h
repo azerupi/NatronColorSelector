@@ -9,13 +9,13 @@
 #include <QMouseEvent>
 
 // Pi constant
-const float pi = std::acos(float(-1));
+const float PI = std::acos(float(-1));
 
-class BaseColorWheel: QWidget {
+class BaseColorWheel: public QWidget {
 
     Q_OBJECT
 
-private:
+protected:
     int outer_radius;
     int inner_radius;
 
@@ -26,8 +26,8 @@ private:
     float lightness;
 
 public:
-    explicit BaseColorWheel(QWidget *parent = 0);
-    ~BaseColorWheel();
+    explicit BaseColorWheel(QWidget *parent = 0, QColor color = Qt::white, int radius = 120);
+    virtual ~BaseColorWheel();
 
     QColor getColor() const;           // Get current color
     float getHue() const;              // Get current hue          between 0 and 1
@@ -60,7 +60,7 @@ protected:
     virtual float pixValue(int x, int y);
 
     // Calculates the distance between two points
-    float distanceBetweenPoints(x1, y1, x2, y2);
+    float distanceBetweenPoints(int x1, int y1, int x2, int y2);
 
     // Calculates if a point is in a given radius
     bool inRadius(int x, int y, int c_x, int c_y, int radius);
