@@ -2,6 +2,15 @@
 
 Color Selector Project for [Natron](https://github.com/MrKepzie/Natron)
 
+To compile, make sure you have Qt installed (tested with Qt4).
+
+```
+git clone https://github.com/azerupi/NatronColorSelector.git
+cd NatronColorSelector
+qmake
+make
+```
+
 # Progress
 
 ### HS/L Color Wheel (almost done)
