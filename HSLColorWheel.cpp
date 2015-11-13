@@ -38,7 +38,7 @@ void HSLColorWheel::paintEvent(QPaintEvent *e) {
 
     // Draw Hue ring
     path = QPainterPath();
-    QConicalGradient gradient_hue(center, center, 90);
+    QConicalGradient gradient_hue(center, center, 104);
     for ( float a = 0; a < 1.0; a += 1.0 / float(24 - 1) ) {
         gradient_hue.setColorAt(a, QColor::fromHslF(a, 1.0, 0.5));
     }
@@ -59,14 +59,18 @@ void HSLColorWheel::paintEvent(QPaintEvent *e) {
     path = QPainterPath();
     painter.setPen(QPen(QColor(75, 75, 75), 1));
     painter.drawImage(center - inner_radius, center - inner_radius, hs_circle);
+    // Draw skin tone reference
+    painter.setPen(QPen(QColor(75, 75, 75), 1));
+    // 123° for skin tones
+    painter.drawLine(QLine(center, center, inner_radius * std::cos(123.0 * PI / 180), inner_radius * std::sin(-123.0 * PI / 180) ));
 
     painter.setClipping(false);
 
     // Draw circle selector
     path = QPainterPath();
     path.addEllipse(QRectF(0, 0, 8, 8));
-    int x = saturation * inner_radius * std::sin(hue * 2 * PI);
-    int y = saturation * inner_radius * std::cos(hue * 2 * PI);
+    int x = saturation * inner_radius * std::sin(hue * 2 * PI + (14 * PI) / 180);
+    int y = saturation * inner_radius * std::cos(hue * 2 * PI + (14 * PI) / 180);
     path.translate(center - 4 - x, center - 4 - y);
     painter.fillPath(path, QColor(200, 200, 200));
     painter.setPen(QPen(QColor(25, 25, 25), 1));
@@ -78,6 +82,7 @@ void HSLColorWheel::paintEvent(QPaintEvent *e) {
     triangle << QPoint(0,0) << QPoint(ring_size * 1.5, 0) << QPoint(ring_size * 0.75, ring_size + 2) << QPoint(0,0);
     triangle = QMatrix().translate(center, center)
                         .rotate(-360 * hue)
+                        .rotate(-14)
                         .translate(-ring_size * 0.75, -inner_radius - ring_size)
                         .map(triangle);
 
@@ -173,8 +178,8 @@ float HSLColorWheel::pixHue(int x, int y) {
     //      |               So we can write atan2(x, -y)
     //      v y             The PI constant is added because atan2 returns a value between -PI and PI but we need a value
     //                      between 0 and 2*PI
-    float angle = std::atan2(x, -y) + PI;
-
+    float angle = std::atan2(x, -y) + PI - (14 * PI) / 180;
+    if(angle < 0) { angle += 2 * PI; }
     float h = angle / (2 * PI);
 
     return h;
