@@ -9,7 +9,7 @@
 
 #include "BaseColorWheel.h"
 
-class HSLColorWheel : BaseColorWheel {
+class HSLColorWheel : public BaseColorWheel {
 
 private:
     QImage hs_circle;
