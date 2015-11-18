@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 
 #include "HSLColorWheel.h"
+#include "ColorSlider.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,13 +13,12 @@ int main(int argc, char *argv[])
     QVBoxLayout vl1(&window);
 
     HSLColorWheel wheel(&window);
+    ColorSlider slider(&window);
 
     vl1.addWidget(&wheel);
+    vl1.addWidget(&slider);
 
     window.setLayout(&vl1);
-
-    //window.addWidget(wheel);
-
     window.show();
     return app.exec();
 }
